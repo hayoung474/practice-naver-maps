@@ -48,26 +48,33 @@ const GeocoderSetting = ({ map }: Props) => {
   };
   return (
     <Wrapper>
+      <h2>위치, 마커 설정</h2>
       <input
         type='text'
         value={query}
         onChange={handleQueryChange}
         placeholder='주소를 입력해보세용!'
       />
-      <button onClick={handleSearchAddress} type='button'>
-        주소검색
-      </button>
-      <button onClick={() => setQuery('서울 강남구 영동대로86길 17 육인빌딩')}>
-        중앙해장
-      </button>
-      <button onClick={() => setQuery('서울 강남구 테헤란로104길 11')}>
-        임고집
-      </button>
+
+      <ButtonGroup>
+        <button onClick={handleSearchAddress} type='button'>
+          주소검색
+        </button>
+        <button
+          onClick={() => setQuery('서울 강남구 영동대로86길 17 육인빌딩')}
+        >
+          중앙해장
+        </button>
+        <button onClick={() => setQuery('서울 강남구 테헤란로104길 11')}>
+          임고집
+        </button>
+      </ButtonGroup>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
+  padding: 24px;
   input {
     width: 70%;
     font-size: 18px;
@@ -85,8 +92,13 @@ const Wrapper = styled.div`
     background-color: #99c341;
     border: none;
     border-radius: 8px;
-    margin-left: 16px;
   }
+`;
+
+const ButtonGroup = styled.div`
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
 `;
 
 export default GeocoderSetting;

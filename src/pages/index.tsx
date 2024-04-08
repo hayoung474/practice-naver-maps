@@ -2,6 +2,7 @@ import Script from 'next/script';
 import { useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import GeocoderSetting from '~/components/GeocoderSetting';
+import RadiusSetting from '~/components/RadiusSetting';
 
 export type NaverMap = naver.maps.Map;
 
@@ -21,28 +22,6 @@ export default function Home() {
 
     const map = new naver.maps.Map('map', mapOptions);
 
-    const centerMarker = new naver.maps.Marker({
-      map,
-      position: location,
-      icon: {
-        url: '/img/icon_home.svg',
-        size: new naver.maps.Size(32, 32),
-        anchor: new naver.maps.Point(16, 16),
-      },
-    });
-
-    const circle = new naver.maps.Circle({
-      map: map,
-      center: location,
-      radius: 500, // m
-
-      strokeColor: '#007BF7',
-      strokeOpacity: 0.4,
-      strokeWeight: 1,
-      fillColor: '#007BF7',
-      fillOpacity: 0.05,
-    });
-
     setMapInstance(map);
   }, []);
 
@@ -55,6 +34,7 @@ export default function Home() {
       ></div>
       <div className='box2'>
         {mapInstance && <GeocoderSetting map={mapInstance} />}
+        {mapInstance && <RadiusSetting map={mapInstance} />}
       </div>
       <Script
         type='text/javascript'
