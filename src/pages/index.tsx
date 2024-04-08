@@ -1,5 +1,7 @@
 import Script from 'next/script';
 import { useEffect, useRef, useState } from 'react';
+import { styled } from 'styled-components';
+import GeocoderSetting from '~/components/GeocoderSetting';
 
 export type NaverMap = naver.maps.Map;
 
@@ -40,13 +42,31 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-      <div id='map' style={{ width: '800px', height: '800px' }}></div>
+    <Wrapper>
+      <div
+        className='box1'
+        id='map'
+        style={{ width: '800px', height: '800px' }}
+      ></div>
+      <div className='box2'>
+        {mapInstance && <GeocoderSetting map={mapInstance} />}
+      </div>
       <Script
         type='text/javascript'
         strategy='beforeInteractive'
         src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NCP_CLIENT_ID}&submodules=geocoder`}
       />
-    </div>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  display: flex;
+
+  .box1 {
+    flex: 1;
+  }
+  .box2 {
+    flex: 1;
+  }
+`;
