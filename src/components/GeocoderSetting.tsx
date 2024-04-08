@@ -24,22 +24,19 @@ const GeocoderSetting = ({ map }: Props) => {
         Number(address.x)
       );
 
-      // new naver.maps.Marker({
-      //   map,
-      //   position,
-      //   animation: naver.maps.Animation.BOUNCE,
-      // });
-
-      // const size = isLarge ? [24, 48] : [36, 72];
-      const size = [36, 72];
+      const defaultSize = new naver.maps.Size(36, 36);
+      const focusSize = new naver.maps.Size(54, 54);
       new naver.maps.Marker({
         map,
         position,
-        animation: naver.maps.Animation.BOUNCE,
+        //animation: naver.maps.Animation.BOUNCE,
         icon: {
-          content: `<div class="map-marker">
-        <img class='map-marker-image'src="https://lh5.googleusercontent.com/proxy/li-sEQCwBoWnJbVpuBp0aZg1FM-3EubbVwCbC5iIQdr0Xq3G2uFBIpCVlL63GnoEAul_FsNWs0mWhSJjY5vVADB5IC7c8ftRnbrDxUYyX-6f4QTyjM8mGyTQkeVD8feFkrlcGH1brRkseycB1_cm_UC65fzCj-c41jVv7DbC2iAKVaIT7Y1fRd8"/>
-     </div>`,
+          content: [
+            `<div class="map-marker">`,
+            `<img class='map-marker-image'src="https://lh5.googleusercontent.com/proxy/li-sEQCwBoWnJbVpuBp0aZg1FM-3EubbVwCbC5iIQdr0Xq3G2uFBIpCVlL63GnoEAul_FsNWs0mWhSJjY5vVADB5IC7c8ftRnbrDxUYyX-6f4QTyjM8mGyTQkeVD8feFkrlcGH1brRkseycB1_cm_UC65fzCj-c41jVv7DbC2iAKVaIT7Y1fRd8"/>`,
+            `</div>`,
+          ].join(''),
+          size: focusSize,
         },
       });
 
@@ -59,6 +56,12 @@ const GeocoderSetting = ({ map }: Props) => {
       />
       <button onClick={handleSearchAddress} type='button'>
         주소검색
+      </button>
+      <button onClick={() => setQuery('서울 강남구 영동대로86길 17 육인빌딩')}>
+        중앙해장
+      </button>
+      <button onClick={() => setQuery('서울 강남구 테헤란로104길 11')}>
+        임고집
       </button>
     </Wrapper>
   );

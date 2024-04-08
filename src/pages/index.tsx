@@ -22,9 +22,13 @@ export default function Home() {
     const map = new naver.maps.Map('map', mapOptions);
 
     const centerMarker = new naver.maps.Marker({
-      position: location,
-      // animation: naver.maps.Animation.BOUNCE,
       map,
+      position: location,
+      icon: {
+        url: '/img/icon_home.svg',
+        size: new naver.maps.Size(32, 32),
+        anchor: new naver.maps.Point(16, 16),
+      },
     });
 
     const circle = new naver.maps.Circle({
