@@ -24,6 +24,7 @@ const GeocoderSetting = ({ map }: Props) => {
         Number(address.x)
       );
 
+      console.log(position);
       const defaultSize = new naver.maps.Size(36, 36);
       const focusSize = new naver.maps.Size(54, 54);
       new naver.maps.Marker({

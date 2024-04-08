@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import GeocoderSetting from '~/components/GeocoderSetting';
 import RadiusSetting from '~/components/RadiusSetting';
+import { dummyData } from '~/data';
 
 export type NaverMap = naver.maps.Map;
+export type NaverMapMarker = naver.maps.Marker;
 
 const latitude = 37.5071243;
 const longitude = 127.0669929;
@@ -12,6 +14,37 @@ const longitude = 127.0669929;
 export default function Home() {
   const [mapInstance, setMapInstance] = useState<NaverMap>();
   const mapRef = useRef<HTMLDivElement>();
+
+  const [markerList, setMarkerList] = useState<NaverMapMarker[]>([]);
+
+  const renderMarkerList = (map: NaverMap) => {
+    let temp: NaverMapMarker[] = [];
+    dummyData.forEach((dummy) => {
+      const position = new naver.maps.LatLng(dummy.lat, dummy.lng);
+
+      const marker = new naver.maps.Marker({
+        map,
+        position,
+
+        icon: {
+          content: [
+            `<div class="map-marker">`,
+            `<img class='map-marker-image'src="${dummy.imgSrc}"/>`,
+            `</div>`,
+          ].join(''),
+        },
+      });
+      temp.push(marker);
+    });
+    setMarkerList(temp);
+  };
+
+  const clearMarkerList = () => {
+    markerList.forEach((marker) => {
+      marker.setMap(null);
+    });
+    setMarkerList([]);
+  };
 
   useEffect(() => {
     const location = new naver.maps.LatLng(latitude, longitude);
@@ -21,17 +54,20 @@ export default function Home() {
     };
 
     const map = new naver.maps.Map('map', mapOptions);
-
     setMapInstance(map);
+    renderMarkerList(map);
   }, []);
 
   return (
     <Wrapper>
-      <div
-        className='box1'
-        id='map'
-        style={{ width: '800px', height: '800px' }}
-      ></div>
+      <div className='box1'>
+        <h2>지도 미리보기</h2>
+        <div
+          id='map'
+          style={{ width: '360px', height: '780px', borderRadius: '8px' }}
+        ></div>
+      </div>
+
       <div className='box2'>
         {mapInstance && <GeocoderSetting map={mapInstance} />}
         {mapInstance && <RadiusSetting map={mapInstance} />}
@@ -49,7 +85,7 @@ const Wrapper = styled.div`
   display: flex;
 
   .box1 {
-    flex: 1;
+    padding: 24px;
   }
   .box2 {
     flex: 1;
