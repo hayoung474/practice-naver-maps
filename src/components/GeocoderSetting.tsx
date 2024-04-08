@@ -24,11 +24,23 @@ const GeocoderSetting = ({ map }: Props) => {
         Number(address.x)
       );
 
-      console.log(position);
+      // new naver.maps.Marker({
+      //   map,
+      //   position,
+      //   animation: naver.maps.Animation.BOUNCE,
+      // });
+
+      // const size = isLarge ? [24, 48] : [36, 72];
+      const size = [36, 72];
       new naver.maps.Marker({
         map,
         position,
         animation: naver.maps.Animation.BOUNCE,
+        icon: {
+          content: `<div class="map-marker">
+        <img class='map-marker-image'src="https://lh5.googleusercontent.com/proxy/li-sEQCwBoWnJbVpuBp0aZg1FM-3EubbVwCbC5iIQdr0Xq3G2uFBIpCVlL63GnoEAul_FsNWs0mWhSJjY5vVADB5IC7c8ftRnbrDxUYyX-6f4QTyjM8mGyTQkeVD8feFkrlcGH1brRkseycB1_cm_UC65fzCj-c41jVv7DbC2iAKVaIT7Y1fRd8"/>
+     </div>`,
+        },
       });
 
       map.setCenter(position);

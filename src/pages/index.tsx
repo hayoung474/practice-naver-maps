@@ -5,8 +5,9 @@ import GeocoderSetting from '~/components/GeocoderSetting';
 
 export type NaverMap = naver.maps.Map;
 
-const latitude = 37.3595704;
-const longitude = 127.105399;
+const latitude = 37.5071243;
+const longitude = 127.0669929;
+
 export default function Home() {
   const [mapInstance, setMapInstance] = useState<NaverMap>();
   const mapRef = useRef<HTMLDivElement>();
@@ -68,5 +69,25 @@ const Wrapper = styled.div`
   }
   .box2 {
     flex: 1;
+  }
+
+  .map-marker {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: solid 1px #d5dce5;
+    z-index: 1;
+
+    box-shadow: 0px 1.2380951642990112px 7.42857027053833px 0px #0000004d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+  }
+  .map-marker > img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    z-index: 2;
   }
 `;
