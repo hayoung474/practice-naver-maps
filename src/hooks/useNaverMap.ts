@@ -8,7 +8,13 @@ interface Props {
 }
 const useNaverMap = ({ mapElementId }: Props) => {
   const [map, setMap] = useState<NaverMap>();
-  const { markers, renderMarkers, activeMarker, clearAllMarkers } = useMarker({
+  const {
+    markers,
+    renderMarkers,
+    activeMarker,
+    clearAllMarkers,
+    settingActiveMarker,
+  } = useMarker({
     markerDataList: dummyData,
   });
 
@@ -27,6 +33,16 @@ const useNaverMap = ({ mapElementId }: Props) => {
     renderMarkers(map);
   };
 
+  const goToMarker = (id: string) => {
+    const targetMarker = markers.find((marker) => marker.data.id === id);
+
+    if (!targetMarker) {
+      return;
+    }
+    map?.setCenter(targetMarker.marker.getPosition());
+    settingActiveMarker(targetMarker);
+  };
+
   const handleDestroyMap = useCallback(() => {
     map?.destroy();
   }, [map]);
@@ -39,6 +55,7 @@ const useNaverMap = ({ mapElementId }: Props) => {
     renderMarkers,
     clearAllMarkers,
     handleDestroyMap,
+    goToMarker,
   };
 };
 export default useNaverMap;

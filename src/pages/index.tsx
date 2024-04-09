@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { styled } from 'styled-components';
 import GeocoderSetting from '~/components/GeocoderSetting';
 import RadiusSetting from '~/components/RadiusSetting';
+import { dummyData } from '~/data';
 import useNaverMap from '~/hooks/useNaverMap';
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
     renderMarkers,
     clearAllMarkers,
     handleDestroyMap,
+    goToMarker,
   } = useNaverMap({
     mapElementId: 'map',
   });
@@ -40,7 +42,13 @@ export default function Home() {
           <RadiusSetting map={map} />
           <button onClick={handleRenderMarkers}>마커 다시 그리기</button>
           <button onClick={clearAllMarkers}>마커 싹다 지우기</button>
-          {activeMarker && <div>{activeMarker.data.name}</div>}
+          <div>
+            {dummyData.map((data) => {
+              return (
+                <button onClick={() => goToMarker(data.id)}>{data.name}</button>
+              );
+            })}
+          </div>
         </div>
       )}
 

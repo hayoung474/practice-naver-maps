@@ -1,4 +1,5 @@
 export interface DummyType {
+  id: string;
   name: string;
   imgSrc?: string;
   type: 'restaurant';
@@ -10,7 +11,6 @@ export interface DummyType {
 export type MapMarker = {
   marker: naver.maps.Marker;
   data: DummyType;
-  id: string;
   // addressData?: {
   //   results: naver.maps.Service.ResultItem[];
   //   address: naver.maps.Service.ReverseGeocodeAddress;
