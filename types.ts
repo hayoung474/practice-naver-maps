@@ -8,13 +8,13 @@ export interface DummyType {
 }
 
 export type MapMarker = {
-  marker?: naver.maps.Marker;
-  data?: DummyType;
-  id?: string;
-  addressData?: {
-    results: naver.maps.Service.ResultItem[];
-    address: naver.maps.Service.ReverseGeocodeAddress;
-  };
+  marker: naver.maps.Marker;
+  data: DummyType;
+  id: string;
+  // addressData?: {
+  //   results: naver.maps.Service.ResultItem[];
+  //   address: naver.maps.Service.ReverseGeocodeAddress;
+  // };
 };
 
 export type NaverMap = naver.maps.Map;

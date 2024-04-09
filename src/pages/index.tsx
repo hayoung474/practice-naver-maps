@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 import GeocoderSetting from '~/components/GeocoderSetting';
 import RadiusSetting from '~/components/RadiusSetting';
 import { dummyData } from '~/data';
-import { DummyType, NaverMap, NaverMapMarker } from '../../types';
+import { DummyType, MapMarker, NaverMap, NaverMapMarker } from '../../types';
 
 const createMarkerHtmlIcon = (
   size: 'small' | 'large',
@@ -27,25 +27,34 @@ export default function Home() {
 
   const [markerList, setMarkerList] = useState<NaverMapMarker[]>([]);
 
-  const [activeMarker, setActiveMarker] = useState<NaverMapMarker>();
-  const [prevMarker, setPrevMarker] = useState<NaverMapMarker>();
+  const [activeMarker, setActiveMarker] = useState<MapMarker>();
+  const [prevMarker, setPrevMarker] = useState<MapMarker>();
+
+  const [activeMarkerId, setActiveMarkerId] = useState<string>();
 
   const renderMarkerList = (map: NaverMap) => {
     let temp: NaverMapMarker[] = [];
-    dummyData.forEach((dummy) => {
-      const position = new naver.maps.LatLng(dummy.lat, dummy.lng);
+    dummyData.forEach((data) => {
+      const position = new naver.maps.LatLng(data.lat, data.lng);
 
       const marker = new naver.maps.Marker({
         map,
         position,
 
-        icon: createMarkerHtmlIcon('small', dummy),
+        icon: createMarkerHtmlIcon('small', data),
       });
 
+      const markerObj: MapMarker = {
+        id: crypto.randomUUID(),
+        marker,
+        data,
+      };
+
       marker.addListener('click', () => {
-        setActiveMarker(marker);
-        marker.setIcon(createMarkerHtmlIcon('large', dummy));
+        setActiveMarker(markerObj);
+        marker.setIcon(createMarkerHtmlIcon('large', markerObj.data));
         marker.setAnimation(naver.maps.Animation.BOUNCE);
+        marker.setZIndex(999);
       });
       temp.push(marker);
     });
@@ -75,11 +84,12 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    console.log(activeMarker, prevMarker);
-    if (activeMarker !== prevMarker) {
-      console.log(prevMarker);
-      prevMarker?.setAnimation(null);
-      // prevMarker.setIcon(createMarkerHtmlIcon('large', dummy));
+    if (activeMarker?.id !== prevMarker?.id) {
+      prevMarker?.marker.setAnimation(null);
+      prevMarker?.marker.setZIndex(0);
+      prevMarker?.marker.setIcon(
+        createMarkerHtmlIcon('small', prevMarker.data)
+      );
 
       setPrevMarker(activeMarker);
     }
