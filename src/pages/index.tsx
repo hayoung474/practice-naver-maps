@@ -1,17 +1,21 @@
 import Script from 'next/script';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { styled } from 'styled-components';
 import GeocoderSetting from '~/components/GeocoderSetting';
 import RadiusSetting from '~/components/RadiusSetting';
-import { dummyData } from '~/data';
-import { DummyType, MapMarker, NaverMap, NaverMapMarker } from '../../types';
 import useNaverMap from '~/hooks/useNaverMap';
 
 export default function Home() {
-  const { map, initialize, activeMarker, renderMarkers, clearAllMarkers } =
-    useNaverMap({
-      mapElementId: 'map',
-    });
+  const {
+    map,
+    initialize,
+    activeMarker,
+    renderMarkers,
+    clearAllMarkers,
+    handleDestroyMap,
+  } = useNaverMap({
+    mapElementId: 'map',
+  });
 
   const handleRenderMarkers = () => {
     map && renderMarkers(map);
@@ -19,11 +23,8 @@ export default function Home() {
 
   useEffect(() => {
     initialize();
+    return () => handleDestroyMap();
   }, []);
-
-  useEffect(() => {
-    console.log(activeMarker);
-  }, [activeMarker]);
   return (
     <Wrapper>
       <MapWrapper>

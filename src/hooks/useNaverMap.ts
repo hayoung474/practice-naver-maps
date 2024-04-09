@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { DummyType, MapMarker, NaverMap, NaverMapMarker } from '../../types';
+import { useCallback, useState } from 'react';
+import { NaverMap } from '../../types';
 import useMarker from './useMarker';
 import { dummyData } from '~/data';
 
@@ -27,6 +27,10 @@ const useNaverMap = ({ mapElementId }: Props) => {
     renderMarkers(map);
   };
 
+  const handleDestroyMap = useCallback(() => {
+    map?.destroy();
+  }, [map]);
+
   return {
     initialize,
     map,
@@ -34,6 +38,7 @@ const useNaverMap = ({ mapElementId }: Props) => {
     activeMarker,
     renderMarkers,
     clearAllMarkers,
+    handleDestroyMap,
   };
 };
 export default useNaverMap;
