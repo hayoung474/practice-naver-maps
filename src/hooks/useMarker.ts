@@ -69,6 +69,7 @@ const useMarker = ({ markerDataList }: Props) => {
     markerObj.marker.setIcon(createMarkerHtmlIcon('click', markerObj.data));
     markerObj.marker.setAnimation(naver.maps.Animation.BOUNCE);
     markerObj.marker.setZIndex(999);
+
     setActiveMarker(markerObj);
   };
 
@@ -79,6 +80,7 @@ const useMarker = ({ markerDataList }: Props) => {
     setActiveMarker(undefined);
     setPrevMarker(undefined);
   };
+
   useEffect(() => {
     if (activeMarker?.data.id !== prevMarker?.data.id) {
       prevMarker?.marker.setAnimation(null);

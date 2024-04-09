@@ -1,7 +1,9 @@
 import Script from 'next/script';
 import { useEffect } from 'react';
 import { styled } from 'styled-components';
+import Filter from '~/components/Filter';
 import GeocoderSetting from '~/components/GeocoderSetting';
+import Marker from '~/components/Marker';
 import RadiusSetting from '~/components/RadiusSetting';
 import { dummyData } from '~/data';
 import useNaverMap from '~/hooks/useNaverMap';
@@ -15,6 +17,7 @@ export default function Home() {
     clearAllMarkers,
     handleDestroyMap,
     goToMarker,
+    filterFavoriteMarkers,
   } = useNaverMap({
     mapElementId: 'map',
   });
@@ -40,15 +43,12 @@ export default function Home() {
         <div className='box2'>
           <GeocoderSetting map={map} />
           <RadiusSetting map={map} />
-          <button onClick={handleRenderMarkers}>마커 다시 그리기</button>
-          <button onClick={clearAllMarkers}>마커 싹다 지우기</button>
-          <div>
-            {dummyData.map((data) => {
-              return (
-                <button onClick={() => goToMarker(data.id)}>{data.name}</button>
-              );
-            })}
-          </div>
+          <Marker
+            handleRenderMarkers={handleRenderMarkers}
+            clearAllMarkers={clearAllMarkers}
+            goToMarker={goToMarker}
+          />
+          <Filter filterFavoriteMarkers={filterFavoriteMarkers} />
         </div>
       )}
 
@@ -63,6 +63,25 @@ export default function Home() {
 
 const Wrapper = styled.div`
   display: flex;
+
+  button {
+    padding: 12px 18px;
+    color: white;
+    background-color: #99c341;
+    border: none;
+    border-radius: 8px;
+  }
+
+  input[type='text'],
+  input[type='number'] {
+    width: 70%;
+    border-radius: 8px;
+    border: solid 1px #d6d6d6;
+    padding: 12px 18px;
+    &::placeholder {
+      color: #d6d6d6;
+    }
+  }
 
   .box2 {
     flex: 1;

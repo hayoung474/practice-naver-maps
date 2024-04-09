@@ -3,6 +3,8 @@ import { NaverMap } from '../../types';
 import useMarker from './useMarker';
 import { dummyData } from '~/data';
 
+const DEFAULT_LAT = 37.5071243;
+const DEFAULT_LNG = 127.0669929;
 interface Props {
   mapElementId: string;
 }
@@ -19,10 +21,7 @@ const useNaverMap = ({ mapElementId }: Props) => {
   });
 
   const initialize = () => {
-    const latitude = 37.5071243;
-    const longitude = 127.0669929;
-
-    const location = new naver.maps.LatLng(latitude, longitude);
+    const location = new naver.maps.LatLng(DEFAULT_LAT, DEFAULT_LNG);
     const mapOptions = {
       center: location,
       zoom: 17,
@@ -39,8 +38,19 @@ const useNaverMap = ({ mapElementId }: Props) => {
     if (!targetMarker) {
       return;
     }
-    map?.setCenter(targetMarker.marker.getPosition());
+    // map?.setCenter(targetMarker.marker.getPosition());
     settingActiveMarker(targetMarker);
+  };
+
+  const filterFavoriteMarkers = (status: boolean) => {
+    const filtered = markers.filter((marker) => !marker.data.favorite);
+    if (status) {
+      filtered.forEach((marker) => marker.marker.setMap(null));
+      return;
+    }
+    if (map) {
+      filtered.forEach((marker) => marker.marker.setMap(map));
+    }
   };
 
   const handleDestroyMap = useCallback(() => {
@@ -56,6 +66,7 @@ const useNaverMap = ({ mapElementId }: Props) => {
     clearAllMarkers,
     handleDestroyMap,
     goToMarker,
+    filterFavoriteMarkers,
   };
 };
 export default useNaverMap;

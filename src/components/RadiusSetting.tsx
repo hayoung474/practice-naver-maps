@@ -53,24 +53,6 @@ const RadiusSetting = ({ map }: Props) => {
 
 const Wrapper = styled.div`
   padding: 24px;
-  input {
-    width: 70%;
-    font-size: 18px;
-    border-radius: 8px;
-    border: solid 1px #d6d6d6;
-    padding: 18px 24px;
-    &::placeholder {
-      color: #d6d6d6;
-    }
-  }
-  button {
-    font-size: 18px;
-    padding: 18px 24px;
-    color: #24332c;
-    background-color: #99c341;
-    border: none;
-    border-radius: 8px;
-  }
 `;
 
 export default RadiusSetting;
