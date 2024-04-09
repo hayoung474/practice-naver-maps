@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { NaverMap } from '~/pages';
+import { NaverMap } from '../../types';
 
 interface Props {
   map: NaverMap;

@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import useGeocoder from '~/hooks/useGeocoder';
-import { NaverMap } from '~/pages';
+import { NaverMap } from '../../types';
 
 interface Props {
   map: NaverMap;
@@ -23,22 +23,9 @@ const GeocoderSetting = ({ map }: Props) => {
         Number(address.y),
         Number(address.x)
       );
-
-      console.log(position);
-      const defaultSize = new naver.maps.Size(36, 36);
-      const focusSize = new naver.maps.Size(54, 54);
       new naver.maps.Marker({
         map,
         position,
-        //animation: naver.maps.Animation.BOUNCE,
-        icon: {
-          content: [
-            `<div class="map-marker">`,
-            `<img class='map-marker-image'src="https://lh5.googleusercontent.com/proxy/li-sEQCwBoWnJbVpuBp0aZg1FM-3EubbVwCbC5iIQdr0Xq3G2uFBIpCVlL63GnoEAul_FsNWs0mWhSJjY5vVADB5IC7c8ftRnbrDxUYyX-6f4QTyjM8mGyTQkeVD8feFkrlcGH1brRkseycB1_cm_UC65fzCj-c41jVv7DbC2iAKVaIT7Y1fRd8"/>`,
-            `</div>`,
-          ].join(''),
-          size: focusSize,
-        },
       });
 
       map.setCenter(position);

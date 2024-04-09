@@ -1,21 +1,34 @@
 import Script from 'next/script';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import GeocoderSetting from '~/components/GeocoderSetting';
 import RadiusSetting from '~/components/RadiusSetting';
 import { dummyData } from '~/data';
+import { DummyType, NaverMap, NaverMapMarker } from '../../types';
 
-export type NaverMap = naver.maps.Map;
-export type NaverMapMarker = naver.maps.Marker;
-
-const latitude = 37.5071243;
-const longitude = 127.0669929;
-
+const createMarkerHtmlIcon = (
+  size: 'small' | 'large',
+  data: DummyType
+): naver.maps.HtmlIcon => {
+  return {
+    content: [
+      `<div class="map-marker ${size}">`,
+      `<img class='map-marker-image'src="${data.imgSrc}"/>`,
+      `</div>`,
+    ].join(''),
+    anchor:
+      size === 'small'
+        ? new naver.maps.Point(18, 18)
+        : new naver.maps.Point(27, 27),
+  };
+};
 export default function Home() {
   const [mapInstance, setMapInstance] = useState<NaverMap>();
-  const mapRef = useRef<HTMLDivElement>();
 
   const [markerList, setMarkerList] = useState<NaverMapMarker[]>([]);
+
+  const [activeMarker, setActiveMarker] = useState<NaverMapMarker>();
+  const [prevMarker, setPrevMarker] = useState<NaverMapMarker>();
 
   const renderMarkerList = (map: NaverMap) => {
     let temp: NaverMapMarker[] = [];
@@ -26,13 +39,13 @@ export default function Home() {
         map,
         position,
 
-        icon: {
-          content: [
-            `<div class="map-marker">`,
-            `<img class='map-marker-image'src="${dummy.imgSrc}"/>`,
-            `</div>`,
-          ].join(''),
-        },
+        icon: createMarkerHtmlIcon('small', dummy),
+      });
+
+      marker.addListener('click', () => {
+        setActiveMarker(marker);
+        marker.setIcon(createMarkerHtmlIcon('large', dummy));
+        marker.setAnimation(naver.maps.Animation.BOUNCE);
       });
       temp.push(marker);
     });
@@ -47,6 +60,9 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const latitude = 37.5071243;
+    const longitude = 127.0669929;
+
     const location = new naver.maps.LatLng(latitude, longitude);
     const mapOptions = {
       center: location,
@@ -58,15 +74,39 @@ export default function Home() {
     renderMarkerList(map);
   }, []);
 
+  useEffect(() => {
+    console.log(activeMarker, prevMarker);
+    if (activeMarker !== prevMarker) {
+      console.log(prevMarker);
+      prevMarker?.setAnimation(null);
+      // prevMarker.setIcon(createMarkerHtmlIcon('large', dummy));
+
+      setPrevMarker(activeMarker);
+    }
+  }, [activeMarker, prevMarker]);
+
+  // useEffect(() => {
+  //   if (activeMarker) {
+  //     if (activeMarker.getAnimation()) {
+  //       activeMarker.setAnimation(null);
+  //       activeMarker
+  //     } else {
+  //       activeMarker.setAnimation(naver.maps.Animation.BOUNCE);
+  //     }
+  //     // const bigSize = new naver.maps.Size(100, 100);
+  //     // activeMarker.setIcon({ size: bigSize });
+  //   }
+  // }, [activeMarker]);
+
   return (
     <Wrapper>
-      <div className='box1'>
+      <MapWrapper>
         <h2>지도 미리보기</h2>
         <div
           id='map'
           style={{ width: '360px', height: '780px', borderRadius: '8px' }}
         ></div>
-      </div>
+      </MapWrapper>
 
       <div className='box2'>
         {mapInstance && <GeocoderSetting map={mapInstance} />}
@@ -84,19 +124,16 @@ export default function Home() {
 const Wrapper = styled.div`
   display: flex;
 
-  .box1 {
-    padding: 24px;
-  }
   .box2 {
     flex: 1;
   }
+`;
 
+const MapWrapper = styled.div`
+  padding: 24px;
   .map-marker {
-    width: 38px;
-    height: 38px;
     border-radius: 50%;
     border: solid 1px #d5dce5;
-    z-index: 1;
 
     box-shadow: 0px 1.2380951642990112px 7.42857027053833px 0px #0000004d;
     display: flex;
@@ -104,10 +141,27 @@ const Wrapper = styled.div`
     align-items: center;
     background-color: white;
   }
-  .map-marker > img {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    z-index: 2;
+  .small {
+    width: 38px;
+    height: 38px;
+    padding: 2px;
+    > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+  }
+
+  .large {
+    width: 54px;
+    height: 54px;
+    padding: 4px;
+    > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
   }
 `;
