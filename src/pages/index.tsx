@@ -5,109 +5,25 @@ import GeocoderSetting from '~/components/GeocoderSetting';
 import RadiusSetting from '~/components/RadiusSetting';
 import { dummyData } from '~/data';
 import { DummyType, MapMarker, NaverMap, NaverMapMarker } from '../../types';
+import useNaverMap from '~/hooks/useNaverMap';
 
-const createMarkerHtmlIcon = (
-  size: 'small' | 'large',
-  data: DummyType
-): naver.maps.HtmlIcon => {
-  return {
-    content: [
-      `<div class="map-marker ${size}">`,
-      `<img class='map-marker-image'src="${data.imgSrc}"/>`,
-      `</div>`,
-    ].join(''),
-    anchor:
-      size === 'small'
-        ? new naver.maps.Point(18, 18)
-        : new naver.maps.Point(27, 27),
-  };
-};
 export default function Home() {
-  const [mapInstance, setMapInstance] = useState<NaverMap>();
-
-  const [markerList, setMarkerList] = useState<NaverMapMarker[]>([]);
-
-  const [activeMarker, setActiveMarker] = useState<MapMarker>();
-  const [prevMarker, setPrevMarker] = useState<MapMarker>();
-
-  const [activeMarkerId, setActiveMarkerId] = useState<string>();
-
-  const renderMarkerList = (map: NaverMap) => {
-    let temp: NaverMapMarker[] = [];
-    dummyData.forEach((data) => {
-      const position = new naver.maps.LatLng(data.lat, data.lng);
-
-      const marker = new naver.maps.Marker({
-        map,
-        position,
-
-        icon: createMarkerHtmlIcon('small', data),
-      });
-
-      const markerObj: MapMarker = {
-        id: crypto.randomUUID(),
-        marker,
-        data,
-      };
-
-      marker.addListener('click', () => {
-        setActiveMarker(markerObj);
-        marker.setIcon(createMarkerHtmlIcon('large', markerObj.data));
-        marker.setAnimation(naver.maps.Animation.BOUNCE);
-        marker.setZIndex(999);
-      });
-      temp.push(marker);
+  const { map, initialize, activeMarker, renderMarkers, clearAllMarkers } =
+    useNaverMap({
+      mapElementId: 'map',
     });
-    setMarkerList(temp);
-  };
 
-  const clearMarkerList = () => {
-    markerList.forEach((marker) => {
-      marker.setMap(null);
-    });
-    setMarkerList([]);
+  const handleRenderMarkers = () => {
+    map && renderMarkers(map);
   };
 
   useEffect(() => {
-    const latitude = 37.5071243;
-    const longitude = 127.0669929;
-
-    const location = new naver.maps.LatLng(latitude, longitude);
-    const mapOptions = {
-      center: location,
-      zoom: 17,
-    };
-
-    const map = new naver.maps.Map('map', mapOptions);
-    setMapInstance(map);
-    renderMarkerList(map);
+    initialize();
   }, []);
 
   useEffect(() => {
-    if (activeMarker?.id !== prevMarker?.id) {
-      prevMarker?.marker.setAnimation(null);
-      prevMarker?.marker.setZIndex(0);
-      prevMarker?.marker.setIcon(
-        createMarkerHtmlIcon('small', prevMarker.data)
-      );
-
-      setPrevMarker(activeMarker);
-    }
-  }, [activeMarker, prevMarker]);
-
-  // useEffect(() => {
-  //   if (activeMarker) {
-  //     if (activeMarker.getAnimation()) {
-  //       activeMarker.setAnimation(null);
-  //       activeMarker
-  //     } else {
-  //       activeMarker.setAnimation(naver.maps.Animation.BOUNCE);
-  //     }
-  //     // const bigSize = new naver.maps.Size(100, 100);
-  //     // activeMarker.setIcon({ size: bigSize });
-  //   }
-  // }, [activeMarker]);
-
+    console.log(activeMarker);
+  }, [activeMarker]);
   return (
     <Wrapper>
       <MapWrapper>
@@ -117,11 +33,16 @@ export default function Home() {
           style={{ width: '360px', height: '780px', borderRadius: '8px' }}
         ></div>
       </MapWrapper>
+      {map && (
+        <div className='box2'>
+          <GeocoderSetting map={map} />
+          <RadiusSetting map={map} />
+          <button onClick={handleRenderMarkers}>마커 다시 그리기</button>
+          <button onClick={clearAllMarkers}>마커 싹다 지우기</button>
+          {activeMarker && <div>{activeMarker.data.name}</div>}
+        </div>
+      )}
 
-      <div className='box2'>
-        {mapInstance && <GeocoderSetting map={mapInstance} />}
-        {mapInstance && <RadiusSetting map={mapInstance} />}
-      </div>
       <Script
         type='text/javascript'
         strategy='beforeInteractive'
@@ -151,7 +72,21 @@ const MapWrapper = styled.div`
     align-items: center;
     background-color: white;
   }
-  .small {
+
+  .map-marker-label {
+    margin-top: 6px;
+
+    color: #000;
+    text-align: center;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+    font-family: 'Spoqa Han Sans Neo';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 133.333% */
+    letter-spacing: -0.2px;
+  }
+  .default {
     width: 38px;
     height: 38px;
     padding: 2px;
@@ -163,7 +98,7 @@ const MapWrapper = styled.div`
     }
   }
 
-  .large {
+  .click {
     width: 54px;
     height: 54px;
     padding: 4px;
